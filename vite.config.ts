@@ -1,9 +1,30 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+// @ts-expect-error no dts file
+import { transformSource } from "react-server-dom-webpack/node-loader";
 
 export default defineConfig({
   clearScreen: false,
   plugins: [
+    {
+      name: "react-server",
+      enforce: "pre",
+      async transform(code, id) {
+        if (this.environment.name === "client") {
+          const context = { format: "module", url: id };
+
+          const { source } = await transformSource(
+            code,
+            context,
+            async (source: string) => ({
+              source,
+            }),
+          );
+
+          return source as string;
+        }
+      },
+    },
     react(),
     {
       name: "vitePluginFetchReactClientModuleServer",

@@ -4,7 +4,7 @@ import { Users } from "./users";
 export async function Story() {
   return (
     <div>
-      <Text>All </Text>
+      <Text>All users</Text>
       <Suspense fallback={"Rendering async server components on the client..."}>
         <Users />
       </Suspense>
