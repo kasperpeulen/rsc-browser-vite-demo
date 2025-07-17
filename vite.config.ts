@@ -2,10 +2,12 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 // @ts-expect-error no dts file
 import { transformSource } from "react-server-dom-webpack/node-loader";
+import vitePluginRscCore from "@vitejs/plugin-rsc/core/plugin";
 
 export default defineConfig({
   clearScreen: false,
   plugins: [
+    vitePluginRscCore(),
     {
       name: "react-server",
       enforce: "pre",
@@ -57,6 +59,7 @@ export default defineConfig({
           "react/jsx-runtime",
           "react/jsx-dev-runtime",
           "react-server-dom-webpack/server",
+          "@vitejs/plugin-rsc/vendor/react-server-dom/server.browser",
         ],
       },
     },
@@ -72,7 +75,7 @@ export default defineConfig({
           "react-dom/client",
           "react/jsx-runtime",
           "react/jsx-dev-runtime",
-          "react-server-dom-webpack/client",
+          "@vitejs/plugin-rsc/vendor/react-server-dom/client.browser",
         ],
         esbuildOptions: {
           platform: "browser",
