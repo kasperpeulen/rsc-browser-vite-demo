@@ -1,32 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-// @ts-expect-error no dts file
-import { transformSource } from "react-server-dom-webpack/node-loader";
-import vitePluginRscCore from "@vitejs/plugin-rsc/core/plugin";
+import { vitePluginRsc } from "./src/plugin/plugin.ts";
 
 export default defineConfig({
   clearScreen: false,
   plugins: [
-    vitePluginRscCore(),
-    {
-      name: "react-server",
-      enforce: "pre",
-      async transform(code, id) {
-        if (this.environment.name === "client") {
-          const context = { format: "module", url: id };
-
-          const { source } = await transformSource(
-            code,
-            context,
-            async (source: string) => ({
-              source,
-            }),
-          );
-
-          return source as string;
-        }
-      },
-    },
+    vitePluginRsc(),
     react(),
     {
       name: "vitePluginFetchReactClientModuleServer",
@@ -60,7 +40,10 @@ export default defineConfig({
           "react/jsx-dev-runtime",
           "react-server-dom-webpack/server",
           "@vitejs/plugin-rsc/vendor/react-server-dom/server.browser",
+          "@vitejs/plugin-rsc/vendor/react-server-dom/server.edge",
+          "@vitejs/plugin-rsc/vendor/react-server-dom/client.edge",
         ],
+        exclude: ["fsevents"],
       },
     },
     react_client: {
@@ -76,7 +59,9 @@ export default defineConfig({
           "react/jsx-runtime",
           "react/jsx-dev-runtime",
           "@vitejs/plugin-rsc/vendor/react-server-dom/client.browser",
+          "@vitejs/plugin-rsc/vendor/react-server-dom/client.edge",
         ],
+        exclude: ["fsevents"],
         esbuildOptions: {
           platform: "browser",
         },

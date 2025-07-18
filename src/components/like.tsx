@@ -1,25 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 
 export function Like({
+  likesPromise,
   onLike,
 }: {
-  onLike?: (count: number) => Promise<void>;
+  likesPromise: Promise<number>;
+  onLike: (count: number) => Promise<void>;
 }) {
-  const [count, setCount] = useState(0);
+  const [open, setOpen] = useState(false);
 
+  const likes = use(likesPromise);
   return (
     <>
-      <button
-        onClick={async () => {
-          setCount(count + 1);
-          await onLike?.(count + 1);
-        }}
-      >
-        Like
-      </button>
-      <span>{count === 0 ? "" : " +" + count + " "}</span>
+      <button onClick={() => setOpen(!open)}>Toggle</button>
+      {open && (
+        <>
+          <button onClick={() => onLike(likes + 1)}>Like</button>
+          <span>{likes === 0 ? "" : ` +${likes} `}</span>
+        </>
+      )}
     </>
   );
 }

@@ -1,6 +1,6 @@
 "use server";
 
-const db = new Map();
+import { db } from "../lib/db.ts";
 
 export async function saveToDb(id: number, count: number) {
   db.set(id, count);

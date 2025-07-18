@@ -1,6 +1,10 @@
 import { Story } from "./components/users.stories";
 import { render } from "./test/render.tsx";
 import { setRequireModule } from "@vitejs/plugin-rsc/core/browser";
+import {
+  loadServerAction,
+  setRequireModule as setRequireServerModule,
+} from "@vitejs/plugin-rsc/core/rsc";
 import { importReactClient } from "./react-client/import.ts";
 import { setServerCallback } from "@vitejs/plugin-rsc/react/browser";
 
@@ -9,16 +13,20 @@ function main() {
     load: (id) => importReactClient(id),
   });
 
-  setServerCallback(async (id: string, args: unknown[]) => {
-    console.log(`action called with`, { id, args });
-
-    const [filepath, name] = id!.split("#");
-    const module = await import(/* @vite-ignore */ filepath);
-    const action = module[name];
-    return action?.(...args);
+  setRequireServerModule({
+    load: (id) => import(/* @vite-ignore */ id),
   });
 
-  render(<Story />);
+  const { rerender } = render(<Story />);
+
+  setServerCallback(async (id: string, args: unknown[]) => {
+    console.log(`action called with`, { id, args });
+    const action = await loadServerAction(id);
+    setTimeout(() => {
+      rerender(<Story />);
+    }, 0);
+    return action?.(...args);
+  });
 }
 
 main();
