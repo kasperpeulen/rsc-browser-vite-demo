@@ -9,7 +9,7 @@ export default defineConfig({
     vitePluginRsc(),
     react(),
     {
-      name: "vitePluginFetchReactClientModuleServer",
+      name: "invokeReactClient",
       configureServer(server) {
         server.middlewares.use(async (req, res, next) => {
           const url = new URL(req.url ?? "/", "https://any.local");
@@ -25,8 +25,20 @@ export default defineConfig({
           next();
         });
       },
+      hotUpdate(ctx) {
+        // TODO find out how to do HMR
+        ctx.server.ws.send({ type: "full-reload", path: ctx.file });
+      },
     },
   ],
+  resolve: {
+    alias: {
+      "@vitejs/plugin-rsc/vendor/react-server-dom/server.edge":
+        "@vitejs/plugin-rsc/vendor/react-server-dom/server.browser",
+      "@vitejs/plugin-rsc/vendor/react-server-dom/client.edge":
+        "@vitejs/plugin-rsc/vendor/react-server-dom/client.browser",
+    },
+  },
   environments: {
     client: {
       keepProcessEnv: false,
@@ -38,10 +50,8 @@ export default defineConfig({
           "react",
           "react/jsx-runtime",
           "react/jsx-dev-runtime",
-          "react-server-dom-webpack/server",
           "@vitejs/plugin-rsc/vendor/react-server-dom/server.browser",
-          "@vitejs/plugin-rsc/vendor/react-server-dom/server.edge",
-          "@vitejs/plugin-rsc/vendor/react-server-dom/client.edge",
+          "@vitejs/plugin-rsc/vendor/react-server-dom/client.browser",
         ],
         exclude: ["fsevents"],
       },
@@ -59,7 +69,6 @@ export default defineConfig({
           "react/jsx-runtime",
           "react/jsx-dev-runtime",
           "@vitejs/plugin-rsc/vendor/react-server-dom/client.browser",
-          "@vitejs/plugin-rsc/vendor/react-server-dom/client.edge",
         ],
         exclude: ["fsevents"],
         esbuildOptions: {

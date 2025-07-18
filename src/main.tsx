@@ -8,6 +8,10 @@ import {
 import { importReactClient } from "./react-client/import.ts";
 import { setServerCallback } from "@vitejs/plugin-rsc/react/browser";
 
+const {
+  default: { startTransition },
+} = await importReactClient("react");
+
 function main() {
   setRequireModule({
     load: (id) => importReactClient(id),
@@ -23,7 +27,9 @@ function main() {
     console.log(`action called with`, { id, args });
     const action = await loadServerAction(id);
     setTimeout(() => {
-      rerender(<Story />);
+      startTransition(() => {
+        rerender(<Story />);
+      });
     }, 0);
     return action?.(...args);
   });

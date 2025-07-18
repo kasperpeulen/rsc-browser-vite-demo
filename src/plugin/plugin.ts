@@ -95,7 +95,7 @@ export function vitePluginRsc(
 ): Plugin[] {
   return [
     {
-      name: "client",
+      name: "rsc",
       configResolved(config_) {
         config = config_;
       },
