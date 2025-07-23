@@ -1,5 +1,5 @@
 import { Story } from "./components/users.stories";
-import { render } from "./test/render.tsx";
+import { renderServer } from "./test/render.tsx";
 import { setRequireModule } from "@vitejs/plugin-rsc/core/browser";
 import {
   loadServerAction,
@@ -21,7 +21,7 @@ function main() {
     load: (id) => import(/* @vite-ignore */ id),
   });
 
-  const { rerender } = render(<Story />);
+  const { rerender } = renderServer(<Story />);
 
   setServerCallback(async (id: string, args: unknown[]) => {
     console.log(`action called with`, { id, args });

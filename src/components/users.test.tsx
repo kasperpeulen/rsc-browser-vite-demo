@@ -1,7 +1,7 @@
 import { expect, test, vi } from "vitest";
 import { setServerCallback } from "@vitejs/plugin-rsc/react/browser";
 import { page } from "@vitest/browser/context";
-import { render } from "../test/render.tsx";
+import { renderServer } from "../test/render.tsx";
 import { Users } from "./users.tsx";
 import { api, msw } from "../test/msw.ts";
 import { http } from "msw";
@@ -16,7 +16,7 @@ test("save to db when clicked", async () => {
     ),
   );
 
-  render(<Users />);
+  renderServer(<Users />);
 
   await page.getByRole("button", { name: "Toggle" }).first().click();
   await page.getByRole("button", { name: "Like" }).click();

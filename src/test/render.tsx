@@ -58,7 +58,7 @@ const mountedRootEntries: {
   root: ReturnType<typeof createConcurrentRoot>;
 }[] = [];
 
-export function render(
+export function renderServer(
   ui: React.ReactNode,
   {
     container,

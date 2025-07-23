@@ -2,10 +2,12 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { vitePluginRsc } from "./src/plugin/plugin.ts";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   clearScreen: false,
   plugins: [
+    tsconfigPaths(),
     vitePluginRsc(),
     react(),
     {
@@ -33,6 +35,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      "next/link": "next/dist/client/link",
       "@vitejs/plugin-rsc/vendor/react-server-dom/server.edge":
         "@vitejs/plugin-rsc/vendor/react-server-dom/server.browser",
       "@vitejs/plugin-rsc/vendor/react-server-dom/client.edge":
@@ -48,12 +51,20 @@ export default defineConfig({
       optimizeDeps: {
         include: [
           "react",
+          "react-dom",
+          "react-dom/client",
           "react/jsx-runtime",
           "react/jsx-dev-runtime",
+          "next/link",
+          "next/dist/server/web/spec-extension/adapters/request-cookies",
+          "next/dist/compiled/@edge-runtime/cookies",
+          "sanitize-html",
+          "next/headers",
           "@vitejs/plugin-rsc/vendor/react-server-dom/server.browser",
+          "@vitejs/plugin-rsc/vendor/react-server-dom/server.edge",
+          "@vitejs/plugin-rsc/vendor/react-server-dom/client.edge",
           "@vitejs/plugin-rsc/vendor/react-server-dom/client.browser",
         ],
-        exclude: ["fsevents"],
       },
     },
     react_client: {
@@ -65,9 +76,14 @@ export default defineConfig({
       optimizeDeps: {
         include: [
           "react",
+          "react-dom",
           "react-dom/client",
           "react/jsx-runtime",
           "react/jsx-dev-runtime",
+          "next/link",
+          "next/dist/server/web/spec-extension/adapters/request-cookies",
+          "next/dist/compiled/@edge-runtime/cookies",
+          "sanitize-html",
           "@vitejs/plugin-rsc/vendor/react-server-dom/client.browser",
         ],
         exclude: ["fsevents"],
